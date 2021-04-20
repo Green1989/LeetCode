@@ -35,7 +35,6 @@ int main()
 	int target = 11;
 	result = sol.twoSum(nums, target);
 	cout << endl << result[0] << ", " << result[1] << endl;
-
 	_getch();
 	return 0;
 }

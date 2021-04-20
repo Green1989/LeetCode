@@ -61,10 +61,6 @@ int main()
             cout << endl;        
         }
     }
-    
-
-
-    
 	_getch();
 	return 0;
 }
