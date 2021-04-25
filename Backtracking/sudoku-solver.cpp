@@ -11,82 +11,63 @@ using namespace std;
 class Solution {
 public:
     void solveSudoku(vector<vector<char>>& board) {
-        backtracking(board, 0);
+        backtracking(board);
     }
-    bool backtracking(vector<vector<char>>& board, int row)
+    bool backtracking(vector<vector<char>>& board)
     {
-        if (row == 9)
+        for (int i = 0; i < board.size(); i++)
         {
-            return true;
-        }
-        for (int column = 0; column < 9; column++)
-        {
-            if (board[row][column] == '.')
+            for (int j = 0; j < board[i].size(); j++)
             {
-                bool bNumsUsed[9] = {false};
-                if (getSuitableNumber(board, row, column, bNumsUsed) > 0)
+                if (board[i][j] == '.')
                 {
-                    for (int num = 0; num < 9; num++)
+                    for (int k = '1'; k <= '9'; k++)
                     {
-                        if (bNumsUsed[num] == false)
+                        if (isvalid(board, i, j, k))
                         {
-                            board[row][column] = '1' + num;
-                            if(backtracking(board, row+1))
+                            board[i][j] = k;
+                            if (backtracking(board))
                             {
-                                break;
+                                return true;
                             }
-                            else
-                            {
-                                board[row][column] = '.';
-                            }
-                        }                        
+                            board[i][j] = '.';          
+                        }
                     }
-                    if (board[row][column] == '.')
-                    {
-                        return false;
-                    }
+                    return false;
                 }
-                else
+            }            
+        }
+        return true;
+    }
+    bool isvalid(vector<vector<char>>& board, int row, int column, char val)
+    {
+        for (int i = 0; i < board.size(); i++)
+        {
+            if (val == board[row][i])
+            {
+                return false;
+            }            
+        }
+        for (size_t i = 0; i < board[row].size(); i++)
+        {
+            if (val == board[i][column])
+            {
+                return false;
+            }            
+        }
+        int rowStart = row/3 *3;
+        int columnStart = column/3 *3;
+        for (int i = rowStart; i < rowStart+3; i++)
+        {
+            for (int j = columnStart; j < columnStart+3; j++)
+            {
+                if (val == board[i][j])
                 {
                     return false;
                 }
             }
         }
         return true;
-    }
-    int getSuitableNumber(vector<vector<char>>& board, int row, int column, bool* bNumsUsed)
-    {
-        //bool bNumsUsed[9] = {false};
-        for (int i = 0; i < 9; i++)
-        {
-            if (board[row][i] != '.')
-            {
-                bNumsUsed[board[row][i] - '1'] = true;
-            }
-            if (board[i][column] != '.')
-            {
-               bNumsUsed[board[i][column] - '1'] = true;
-            }                        
-        }
-        for (int i = (row/3) * 3; i < 3; i++)
-        {
-            for (int j = (column/3) * 3; j < 3; j++)
-            {
-                if (board[i][j] != '.')
-                {
-                    bNumsUsed[board[i][j] - '1'] = true;
-                }
-            }            
-        }
-        int nCount = 0;
-        for (int i = 0; i < 9; i++)
-        {
-            if (bNumsUsed[i] == false)
-            {
-                nCount++;
-            }            
-        }
-        return nCount;
     }
 };
 int main()
