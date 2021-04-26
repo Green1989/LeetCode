@@ -3,8 +3,6 @@
  *
  * [332] 重新安排行程
  */
-#include<map>
-#include<unordered_map>
 #include<vector>
 #include<iostream>
 using namespace std;
@@ -12,38 +10,60 @@ using namespace std;
 class Solution {
 public:
     vector<string> vecResult;
-    unordered_map<string, map<string, int>> targets;
     vector<string> findItinerary(vector<vector<string>>& tickets) {
         vecResult.push_back("JFK");
-        for (auto &&vec : tickets)
+        vector<bool> used(tickets.size(), false);
+        while (vecResult.size() < tickets.size() + 1)
         {
-            targets[vec[0]][vec[1]]++;
-        }
-        backtracking(tickets);
-        return vecResult;        
+            backtracking(tickets, "JFK", used);
+        }        
+        
+        return vecResult;
     }
-    bool backtracking(vector<vector<string>>& tickets)
+    void backtracking(vector<vector<string>>& tickets, string target, vector<bool> used)
     {
         if (vecResult.size() == tickets.size() + 1)
         {
-            return true;
+            return;
         }
-        for (auto &&target : targets[vecResult.back()])
+        //string best = getBest(tickets, target);
+        string best = "";
+        int index = -1;
+        for (int i = 0; i < tickets.size(); i++)
         {
-            if (target.second > 0)
+            if (tickets[i][0] == target)
             {
-                vecResult.push_back(target.first);
-                target.second--;
-                if(backtracking(tickets))
+                if (tickets[i][1] < best && used[i] == false)
                 {
-                    return true;
+                    best = tickets[i][1];
+                    index = i;
                 }
-                vecResult.pop_back();
-                target.second++;
-            }    
+            }
         }
-        return false;
+        if (index < 0)
+        {
+            return;
+        }        
+        used[index] = true;
+        vecResult.push_back(best);
+        backtracking(tickets, best, used);
+        
     }
+    // string getBest(vector<vector<string>>& tickets, string target)
+    // {
+    //     string best = "ZZZ";
+    //     for (int i = 0; i < tickets.size(); i++)
+    //     {
+    //         if (tickets[i][0] == target)
+    //         {
+    //             if (tickets[i][1] < best)
+    //             {
+    //                 best = tickets[i][1];
+    //             }
+    //         }
+    //     }
+    //     return best;
+    // }
 };
 // @lc code=end
 
