@@ -3,6 +3,7 @@
  *
  * [10] 正则表达式匹配
  */
+#include<conio.h>
 #include<vector>
 #include<iostream>
 using namespace std;
@@ -14,7 +15,7 @@ public:
         dp[0][0] = true;
         for (int i = 1; i <= p.size(); i++)
         {
-            if (p[i] == '*' && i-2 >= 0)
+            if (p[i-1] == '*' && i-2 >= 0)
             {
                 dp[0][i] = dp[0][i-2];
             }            
@@ -52,4 +53,11 @@ public:
     }
 };
 // @lc code=end
+int main()
+{
+    Solution sol;
+    cout << sol.isMatch("aa", "a*") << endl;
+    _getch();
+    return 0;
+}
 
