@@ -4,61 +4,91 @@
  * [146] LRU 缓存机制
  */
 #include<conio.h>
-#include<queue>
 #include<unordered_map>
 #include<iostream>
 using namespace std;
 // @lc code=start
 
-class ListNode
+class MyListNode
 {
 public:    
-    ListNode(int nKey):key(nKey){}
+    MyListNode(int nKey):key(nKey),next(nullptr),pre(nullptr){}
     int key;
-    ListNode* next;
-    ListNode* pre;
+    MyListNode* next;
+    MyListNode* pre;
 };
 
 class List
 {
 private:    
-    ListNode* m_head;
-    ListNode* m_tail;
-    int m_nsize;
+    MyListNode* m_head;
+    MyListNode* m_tail;
+    int m_nSize;
 public:
-    int size(){return m_nsize;}
+    List():m_nSize(0),m_head(nullptr),m_tail(nullptr){}
+    int size(){return m_nSize;}
     int getHeadKey(){return m_head->key;}
-    void get(ListNode* node)
+    void get(MyListNode* node)
     {
-        ListNode* pre = node->pre;
-        ListNode* next = node->next;
-        pre->next = next;
-        next->pre = pre;
+        if (node == nullptr || node == m_tail)
+        {
+            return;
+        }
+        else if (node == m_head)
+        {
+            m_head = m_head->next;
+        }
+        else
+        {
+            MyListNode* pre = node->pre;
+            MyListNode* next = node->next;
+            pre->next = next;
+            next->pre = pre;            
+        }
         insert(node);
-        m_nsize--;
+        m_nSize--;
     }
-    void insert(ListNode* node)
+    void insert(MyListNode* node)
     {
-        m_tail->next = node;
-        node->pre = m_tail;
-        node->next = nullptr;
-        m_tail = node;        
-        m_nsize++;
+        if (node == nullptr)
+        {
+            return;
+        }
+        if (m_tail != nullptr)
+        {
+            m_tail->next = node;
+            node->pre = m_tail;
+            node->next = nullptr;
+            m_tail = node;
+        }
+        else
+        {
+            m_head = node;
+            m_tail = node;
+        }
+        m_nSize++;
     }
-    ListNode* replace(int key)
+    MyListNode* replace(int key)
     {
-        ListNode* head = m_head->next;
-        m_head->key = key;
-        insert(m_head);
-        m_nsize--;
-        m_head = head;
+        if (m_head != m_tail)
+        {
+            MyListNode* head = m_head->next;
+            m_head->key = key;
+            insert(m_head);
+            m_nSize--;
+            m_head = head;
+        }
+        else
+        {
+            m_tail->key = key;
+        }
         return m_tail;
     }
 };
 class LRUCache {
 private:
     List m_List;
-    unordered_map<int, pair<int, ListNode*>> m_map;
+    unordered_map<int, pair<int, MyListNode*>> m_map;
     int m_capacity;
 public:
 
@@ -82,7 +112,7 @@ public:
         {
             if(m_List.size() < m_capacity)
             {
-                ListNode* cur = new ListNode(key);                
+                MyListNode* cur = new MyListNode(key);                
                 m_map[key].first = value;
                 m_map[key].second = cur;
                 m_List.insert(cur);
@@ -91,8 +121,13 @@ public:
             {
                 m_map.erase(m_List.getHeadKey());
                 m_map[key].second = m_List.replace(key);
-                m_map[key].first = value;                     
+                m_map[key].first = value;
             }
+        }
+        else
+        {
+            m_map[key].first = value;
+            m_List.get(m_map[key].second);
         }
     }
 };
@@ -108,15 +143,22 @@ public:
 int main()
 {
     LRUCache lRUCache(2);
-    lRUCache.put(1, 1); // 缓存是 {1=1}
+    lRUCache.put(2, 1); // 缓存是 {1=1}
     lRUCache.put(2, 2); // 缓存是 {1=1, 2=2}
-    lRUCache.get(1);    // 返回 1
-    lRUCache.put(3, 3); // 该操作会使得关键字 2 作废，缓存是 {1=1, 3=3}
-    lRUCache.get(2);    // 返回 -1 (未找到)
-    lRUCache.put(4, 4); // 该操作会使得关键字 1 作废，缓存是 {4=4, 3=3}
-    lRUCache.get(1);    // 返回 -1 (未找到)
-    lRUCache.get(3);    // 返回 3
-    lRUCache.get(4);    // 返回 4    
+    lRUCache.get(2);    // 返回 1
+    lRUCache.put(1, 1); // 该操作会使得关键字 2 作废，缓存是 {1=1, 3=3}
+    lRUCache.put(4, 1); // 该操作会使得关键字 1 作废，缓存是 {4=4, 3=3}
+    lRUCache.get(2);    // 返回 -1 (未找到)  
+    // LRUCache lRUCache(2);
+    // lRUCache.put(1, 1); // 缓存是 {1=1}
+    // lRUCache.put(2, 2); // 缓存是 {1=1, 2=2}
+    // lRUCache.get(1);    // 返回 1
+    // lRUCache.put(3, 3); // 该操作会使得关键字 2 作废，缓存是 {1=1, 3=3}
+    // lRUCache.get(2);    // 返回 -1 (未找到)
+    // lRUCache.put(4, 4); // 该操作会使得关键字 1 作废，缓存是 {4=4, 3=3}
+    // lRUCache.get(1);    // 返回 -1 (未找到)
+    // lRUCache.get(3);    // 返回 3
+    // lRUCache.get(4);    // 返回 4    
     _getch();
     return 0;
 }
