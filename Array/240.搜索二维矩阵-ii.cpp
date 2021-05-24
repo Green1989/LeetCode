@@ -10,55 +10,58 @@ using namespace std;
 class Solution {
 public:
     bool searchMatrix(vector<vector<int>>& matrix, int target) {
-        int row = 0;
-        int clumn = 0;
-        for (int i = 0; i < matrix.size(); i++)
+        int rows = matrix.size();
+        int clumns = matrix[0].size();
+        for (int j = 0; j < clumns && rows-(j+1) >= 0; j++)
         {
-            if (matrix[i][0] == target)
+            if (target == matrix[rows-(j+1)][j])
             {
                 return true;
             }
-            else if (matrix[i][0] > target)
+            else if(target < matrix[rows-(j+1)][j])
             {
-                break;
+                int left = 0;
+                int right = rows-(j+1);
+                while (left <= right)
+                {
+                    int mid = (right+left)/2;
+                    if(target == matrix[mid][j])
+                    {
+                        return true;
+                    }
+                    else if (target < matrix[mid][j])
+                    {
+                        right = mid-1;
+                    }
+                    else
+                    {
+                        left = mid+1;
+                    }                    
+                }                
             }
-            row = i;
-        }
-        for (int j = 0; j < matrix[0].size(); j++)
-        {
-            if (matrix[0][j] == target)
+            else if(target > matrix[rows-(j+1)][j])
             {
-                return true;
+                int left = j;
+                int right = clumns-1;
+                while (left <= right)
+                {
+                    int mid = (right+left)/2;
+                    if(target == matrix[rows-(j+1)][mid])
+                    {
+                        return true;
+                    }
+                    else if (target < matrix[rows-(j+1)][mid])
+                    {
+                        right = mid-1;
+                    }
+                    else
+                    {
+                        left = mid+1;
+                    }                      
+                }                
             }
-            else if (matrix[0][j] > target)
-            {
-                break;
-            }
-            clumn = j;
-        }
-        for (int i = 1; i <= row; i++)
-        {
-            if (matrix[i][clumn] == target)
-            {
-                return true;
-            }
-            else if (matrix[i][clumn] > target)
-            {
-                break;
-            }
-        }
-        for (int j = 1; j <= clumn; j++)
-        {
-            if (matrix[row][j] == target)
-            {
-                return true;
-            }
-            else if (matrix[row][j] > target)
-            {
-                break;
-            }
-        }
-        return false;
+        }     
+        return false;   
     }
 };
 // @lc code=end
