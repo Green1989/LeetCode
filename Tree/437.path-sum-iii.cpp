@@ -1,21 +1,21 @@
 /*
- * @lc app=leetcode.cn id=114 lang=cpp
+ * @lc app=leetcode.cn id=437 lang=cpp
  *
- * [114] 二叉树展开为链表
+ * [437] 路径总和 III
  */
 #include <conio.h>
-#include<vector>
 #include<queue>
+#include<vector>
 #include<iostream>
 using namespace std;
 struct TreeNode {
-     int val;
-     TreeNode *left;
-     TreeNode *right;
-     TreeNode() : val(0), left(nullptr), right(nullptr) {}
-     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- };
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
 // @lc code=start
 /**
  * Definition for a binary tree node.
@@ -26,49 +26,54 @@ struct TreeNode {
  *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
  *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };            
+ * };
  */
 class Solution {
 public:
-    void flatten(TreeNode* root) {
-        if (root == nullptr)
+    vector<vector<int>> vecRes;
+    int pathSum(TreeNode* root, int targetSum) {
+        vector<int> vecData;
+        DFS(root, vecData);
+        int nCount = 0;
+        
+        for (int i = 0; i < vecRes.size(); i++)
         {
-            return;
+            for (int j = 0; j < vecRes[i].size(); j++)
+            {
+                int nSum = 0;
+                for (int k = j; k < vecRes[i].size(); k++)
+                {
+                    nSum += vecRes[i][k];
+                    if (nSum == targetSum)
+                    {
+                        nCount++;
+                    }
+                }
+            }
         }
-        FlattenChiled(root);        
+        return nCount;
     }
-    TreeNode* FlattenChiled(TreeNode* root)
+    void DFS(TreeNode* root, vector<int> vecData)
     {
-        if (root == nullptr)
-        {
-            return nullptr;
+        vecData.push_back(root->val);
+        if (root->left != nullptr)
+        {            
+            DFS(root->left, vecData);
         }
-        TreeNode* lastLeftNode = root;
-        while (root->left == nullptr)
+        if (root->right != nullptr)
         {
-            if (root->right == nullptr)
-            {
-                return lastLeftNode;
-            }
-            root = root->right;
-        }
-        TreeNode* leftTemp = FlattenChiled(root->left);
-        TreeNode* rightTemp = root->right;       
-        if (leftTemp != nullptr)
+            DFS(root->right, vecData);
+        }        
+        if (root->left == nullptr && root->right == nullptr)
         {
-            root->left = nullptr;
-            root->right = leftTemp;
-            while (leftTemp->right != nullptr)
-            {
-                leftTemp = leftTemp->right;
-            }
-            leftTemp->right = rightTemp;
+            vecRes.emplace_back(vecData);
+            return ;
         }
-        FlattenChiled(rightTemp);
-        return lastLeftNode;
+        vecData.pop_back();
     }
 };
 // @lc code=end
+
 
 TreeNode* creCBiTree(int *p,int num)
 {	
@@ -115,9 +120,10 @@ int main()
     //int nTemp[] = {1,2,5,3,4,INT_MAX,6,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX};
     //int nTemp[] = {1,2,INT_MAX,INT_MAX,3,INT_MAX,INT_MAX};
     //int nTemp[] = {2,1,4,INT_MAX,INT_MAX,3,INT_MAX,INT_MAX,INT_MAX};
-    int nTemp[] = {4,1,INT_MAX,INT_MAX,3,2,INT_MAX};
+    int nTemp[] = {10,5,-3,3,2,INT_MAX,11,3,-2,INT_MAX,1,INT_MAX,INT_MAX};
     TreeNode* root = creCBiTree(nTemp, sizeof(nTemp)/sizeof(int));
-    sol.flatten(root);
+    int nRet = sol.pathSum(root, 8);
+    cout << nRet << endl;
     _getch();
     return 0;
 }

@@ -3,6 +3,8 @@
  *
  * [543] 二叉树的直径
  */
+#include<iostream>
+using namespace std;
 struct TreeNode {
     int val;
     TreeNode *left;
@@ -27,27 +29,35 @@ class Solution {
 public:
     int nMax = 0;
     int diameterOfBinaryTree(TreeNode* root) {
-
-    }
-    int traveral(TreeNode* root, int& nLeft, int& nRight)
-    {
-        if (root->left == nullptr && root->right == nullptr)
+        if (root == nullptr)
         {
             return 0;
         }
-        // int nLeft = 0;
-        // int nRight = 0;
+        int nLeft = diameterOfBinaryTree(root->left);
+        int nRight = diameterOfBinaryTree(root->right);
+        int nMid = traveral(root->left) + traveral(root->right);
+        return max(nMid, max(nLeft, nRight));
+    }
+    int traveral(TreeNode* root)
+    {
+        //if (root->left == nullptr && root->right == nullptr)
+        if (root == nullptr)
+        {
+            return 0;
+        }
+        int nLeft = 1;
+        int nRight = 1;
         if (root->left != nullptr)
         {
-            nLeft = 1 + traveral(root->left, );
+            nLeft += traveral(root->left);
         }
         if (root->right != nullptr)
         {
-            nRight = 1 + traveral(root->right);
+            nRight += traveral(root->right);
         }
-        
-        
+        return max(nLeft, nRight);
     }
+    
 };
 // @lc code=end
 
