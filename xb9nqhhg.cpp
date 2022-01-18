@@ -14,80 +14,60 @@
 #include<math.h>
 using namespace std;
 
-/**
- * Definition for a binary tree node.
- */
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
-};
-class CBTInserter {
+class trie
+{
 private:
-    TreeNode* m_root;
-    queue<TreeNode*> m_que;
+    bool m_bFlag;
+    string m_sData;
+    unordered_map<string, trie*> m_mpNext;
 public:
-    CBTInserter(TreeNode* root) {
-        m_root = root;
-        if (m_root != nullptr)
+    trie():m_bFlag(false)
+    {
+    }
+    void insert(string data)
+    {
+        int nPos = 0;
+        int start = data.find('/', nPos);
+        while (start != string::npos)
         {
-            queue<TreeNode*> que;
-            que.push(m_root);
-            while (!que.empty())
-            {
-                int nSize = que.size();
-                for(int i = 0; i < nSize; i++)
-                {
-                    TreeNode* cur = que.front();
-                    if (cur->left == nullptr || cur->right == nullptr)
-                    {
-                        m_que.push(cur);
-                    }
-                    if (cur->left != nullptr)
-                        que.push(cur->left);
-                    if (cur->right != nullptr)
-                        que.push(cur->right);
-                    que.pop();
-                }
-            }
+            start = data.find('/', nPos);
         }
+        
+    }
+    // ~trie()
+    // {}
+};
+
+
+class FileSystem {
+public:
+    FileSystem() {
+
     }
     
-    int insert(int v) {
-        if (m_root == nullptr)
-        {
-            m_root = new TreeNode(v);
-            return v;
-        }        
-        queue<TreeNode*> que;
-        que.push(m_root);
-        while (!que.empty())
-        {
-            int nSize = que.size();
-            for(int i = 0; i < nSize; i++)
-            {
-                TreeNode* cur = que.front();
-                if (cur->left == nullptr)
-                {
-                    cur->left = new TreeNode(v);
-                    return cur->val;
-                }
-                else if (cur->right == nullptr)
-                {
-                    cur->right = new TreeNode(v);
-                    return cur->val;
-                }
-                que.push(cur->left);
-                que.push(cur->right);
-                que.pop();
-            }
-        }
-        return v;        
-    }    
-    TreeNode* get_root() {
-        return m_root;
+    vector<string> ls(string path) {
+
+    }
+    
+    void mkdir(string path) {
+
+    }
+    
+    void addContentToFile(string filePath, string content) {
+
+    }
+    
+    string readContentFromFile(string filePath) {
+
     }
 };
+
+/**
+ * Your FileSystem object will be instantiated and called as such:
+ * FileSystem* obj = new FileSystem();
+ * vector<string> param_1 = obj->ls(path);
+ * obj->mkdir(path);
+ * obj->addContentToFile(filePath,content);
+ * string param_4 = obj->readContentFromFile(filePath);
+ */
+
